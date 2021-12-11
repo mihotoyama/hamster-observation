@@ -1,19 +1,15 @@
-import { Entity } from "typeorm";
+import { Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class Hamster {
+  @PrimaryGeneratedColumn()
+  readonly id: number;
   nowtime: string;
-
   weight: number;
-
   activeCount: number;
-
   temperature: number;
-
   wheelCount: number;
-
   houseCount: number;
-
   humidity: number;
 
   constructor(
