@@ -1,4 +1,5 @@
-import { Body, Controller, Get, HttpCode, HttpException, HttpStatus, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, HttpException, HttpStatus, Post, Req } from '@nestjs/common';
+import { Request } from 'express';
 import { HamsterDto } from './hamster.dto';
 import { Hamster } from './hamster.entity';
 import { HamsterResponse } from './hamster.response';
@@ -18,7 +19,13 @@ export class HamsterController {
   }
 
   @Post()
-  async add(@Body() hamsterDto: HamsterDto){
+  async add(@Body() hamsterDto: HamsterDto, @Req() req: Request){
+
+    // M5stackが接続しているネットワークのIPアドレスにする
+    if (req.ip !== '::1') {
+      throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED)
+    }
+
     return await this.service.add(hamsterDto).then((hamster) => {
       return this.setHamsterResponse(hamster);
     }).catch(() => {
