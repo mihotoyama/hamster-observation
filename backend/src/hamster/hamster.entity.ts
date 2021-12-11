@@ -1,4 +1,4 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class Hamster {
@@ -25,6 +25,13 @@ export class Hamster {
 
   @Column({ type: 'int' })
   humidity: number;
+
+  @CreateDateColumn({
+    type: 'datetime',
+    default: () => "datetime('now', 'localtime')",
+    precision: 0,
+  })
+  createdAt: Date;
 
   constructor(
     nowtime: string,
