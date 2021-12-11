@@ -11,7 +11,13 @@ export class HamsterService {
     private hamsterRepository: Repository<Hamster>
   ) {}
 
-  async add(hamsterDto: HamsterDto): Promise<Hamster>{
+  async findLatest(): Promise<Hamster> {
+    return await this.hamsterRepository.findOne({
+      order: { id: 'DESC' }
+    })
+  }
+
+  async add(hamsterDto: HamsterDto): Promise<Hamster> {
     return await this.hamsterRepository.save(hamsterDto);
   }
 }

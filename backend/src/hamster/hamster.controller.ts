@@ -1,5 +1,6 @@
-import { Body, Controller, HttpCode, HttpException, HttpStatus, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpException, HttpStatus, Param, Post } from '@nestjs/common';
 import { HamsterDto } from './hamster.dto';
+import { Hamster } from './hamster.entity';
 import { HamsterResponse } from './hamster.response';
 import { HamsterService } from './hamster.service';
 
@@ -7,21 +8,34 @@ import { HamsterService } from './hamster.service';
 export class HamsterController {
   constructor(private readonly service: HamsterService){}
 
+  @Get()
+  async findLatest(){
+    return await this.service.findLatest().then((hamster) => {
+      return this.setHamsterResponse(hamster);
+    }).catch(() => {
+      throw new HttpException('Internal Server Error', HttpStatus.INTERNAL_SERVER_ERROR);
+    })
+  }
+
   @Post()
   async add(@Body() hamsterDto: HamsterDto){
     return await this.service.add(hamsterDto).then((hamster) => {
-      const hamsterResponse: HamsterResponse = {
-        nowtime: hamster.nowtime,
-        weight: hamster.weight,
-        activeCount: hamster.activeCount,
-        temperature: hamster.temperature,
-        wheelCount: hamster.wheelCount,
-        houseCount: hamster.houseCount,
-        humidity: hamster.humidity
-      }
-      return hamsterResponse;
+      return this.setHamsterResponse(hamster);
     }).catch(() => {
       throw new HttpException('Bad request', HttpStatus.BAD_REQUEST);
     })
+  }
+
+  private setHamsterResponse(resolved: Hamster) {
+    const hamsterResponse: HamsterResponse = {
+      nowtime: resolved.nowtime,
+      weight: resolved.weight,
+      activeCount: resolved.activeCount,
+      temperature: resolved.temperature,
+      wheelCount: resolved.wheelCount,
+      houseCount: resolved.houseCount,
+      humidity: resolved.humidity
+    }
+    return hamsterResponse;
   }
 }
