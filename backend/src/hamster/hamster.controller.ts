@@ -5,11 +5,11 @@ import { Hamster } from './hamster.entity';
 import { HamsterResponse } from './hamster.response';
 import { HamsterService } from './hamster.service';
 
-@Controller('hamster')
+@Controller('hamster-observation')
 export class HamsterController {
   constructor(private readonly service: HamsterService){}
 
-  @Get()
+  @Get('/realtime-cawaii-bo')
   async findLatest(){
     return await this.service.findLatest().then((hamster) => {
       return this.setHamsterResponse(hamster);
@@ -18,7 +18,7 @@ export class HamsterController {
     })
   }
 
-  @Post()
+  @Post('/realtime-cawaii-bo')
   async add(@Body() hamsterDto: HamsterDto, @Req() req: Request){
 
     // M5stackが接続しているネットワークのIPアドレスにする
