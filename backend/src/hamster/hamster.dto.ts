@@ -1,24 +1,24 @@
-import { IsNumber, IsString } from "class-validator";
+import { IsNumber, IsNumberString, IsString } from "class-validator";
 
 export class HamsterDto {
   @IsString()
   nowtime: string;
 
-  @IsNumber()
+  @IsNumberString()
   weight: number;
 
-  @IsNumber()
+  @IsNumberString()
   activeCount: number;
 
-  @IsNumber()
+  @IsNumberString()
   temperature: number;
 
-  @IsNumber()
+  @IsNumberString()
   wheelCount: number;
 
-  @IsNumber()
+  @IsNumberString()
   houseCount: number;
 
-  @IsNumber()
+  @IsNumberString()
   humidity: number;
 }
