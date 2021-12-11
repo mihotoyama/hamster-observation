@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
+import { Cron } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Raw, Repository } from 'typeorm';
 import { HamsterDto } from './hamster.dto';
 import { Hamster } from './hamster.entity';
 
@@ -19,5 +20,16 @@ export class HamsterService {
 
   async add(hamsterDto: HamsterDto): Promise<Hamster> {
     return await this.hamsterRepository.save(hamsterDto);
+  }
+
+  private async deleteOld(): Promise<void> {
+    this.hamsterRepository.delete({
+      createdAt: Raw((createdAt) => `${createdAt} < datetime('now', 'localtime', '-30 minutes')`)
+    })
+  }
+
+  @Cron('0 * * * * *')
+  deleteOldCron() {
+    this.deleteOld();
   }
 }
