@@ -26,6 +26,9 @@ export class Hamster {
   @Column({ type: 'int' })
   humidity: number;
 
+  @Column({ type: 'double', nullable: true })
+  wheelSpeed: number;
+
   @CreateDateColumn({
     type: 'datetime',
     default: () => "datetime('now', 'localtime')",
@@ -41,6 +44,7 @@ export class Hamster {
     wheelCount: number,
     houseCount: number,
     humidity: number,
+    wheelSpeed: number,
   ){
     this.nowtime = nowtime;
     this.weight = weight;
@@ -49,5 +53,6 @@ export class Hamster {
     this.wheelCount = wheelCount;
     this.houseCount = houseCount;
     this.humidity = humidity;
+    this.wheelSpeed = wheelSpeed;
   }
 }
