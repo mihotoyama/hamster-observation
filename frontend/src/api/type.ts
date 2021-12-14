@@ -6,4 +6,7 @@ export type HamsterResponse = {
   wheelCount: number;
   houseCount: number;
   humidity: number;
+  wheelSpeed: number;
 }
+
+export type HamsterResponseArray = HamsterResponse[];

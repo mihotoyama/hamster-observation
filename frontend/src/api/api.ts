@@ -1,12 +1,12 @@
 import http from './api-settings';
-import { HamsterResponse } from './type';
+import { HamsterResponseArray } from './type';
 
-export default async function getHamsterJson(): Promise<HamsterResponse> {
+export default async function getHamsterJsonArray(): Promise<HamsterResponseArray> {
   return http.get('').then((res) => {
     if (res.status === 200) {
-      return res.data as HamsterResponse;
+      return res.data as HamsterResponseArray;
     }
-    return {
+    return [{
       nowtime: '',
       weight: 0,
       activeCount: 0,
@@ -14,6 +14,7 @@ export default async function getHamsterJson(): Promise<HamsterResponse> {
       wheelCount: 0,
       houseCount: 0,
       humidity: 0,
-    } as HamsterResponse;
+      wheelSpeed: 0,
+    }] as HamsterResponseArray;
   });
 }

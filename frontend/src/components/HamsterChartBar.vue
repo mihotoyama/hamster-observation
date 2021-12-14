@@ -6,10 +6,10 @@ import {
   Watch,
 } from 'vue-property-decorator';
 import Chart from 'chart.js';
-import { Line, mixins } from 'vue-chartjs';
+import { Bar, mixins } from 'vue-chartjs';
 
 @Component({})
-export default class HamsterChart extends Mixins(Line, mixins.reactiveProp) {
+export default class HamsterChartBar extends Mixins(Bar, mixins.reactiveProp) {
   @Prop() chartData!: Chart.ChartData;
 
   @Prop() chartOptions!: Chart.ChartOptions;
