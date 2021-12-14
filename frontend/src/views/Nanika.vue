@@ -1,5 +1,5 @@
 <template lang="pug">
-  v-main
+  div
     h1 なにかここに書きたいね
 </template>
 
