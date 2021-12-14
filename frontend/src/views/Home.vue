@@ -28,7 +28,7 @@ import getHamsterJson from '../api/api';
 import { HamsterResponse, HamsterResponseArray } from '../api/type';
 
 interface DataForChart {
-  x: string,
+  x: Date,
   y: number,
 }
 
@@ -71,10 +71,6 @@ export default class Home extends Vue {
       xAxes: [
         {
           type: 'time',
-          ticks: {
-            min: '20211210220000',
-            max: '20211210223000',
-          },
         },
       ],
       yAxes: [
@@ -179,7 +175,7 @@ export default class Home extends Vue {
     const temperature = [];
     for (let i = 0; i < this.hamsterDataArray.length; i += 1) {
       temperature[i] = {
-        x: this.hamsterDataArray[i].nowtime,
+        x: Home.nowtimeToDate(this.hamsterDataArray[i].nowtime),
         y: this.hamsterDataArray[i].temperature,
       };
     }
@@ -190,7 +186,7 @@ export default class Home extends Vue {
     const humidity = [];
     for (let i = 0; i < this.hamsterDataArray.length; i += 1) {
       humidity[i] = {
-        x: this.hamsterDataArray[i].nowtime,
+        x: Home.nowtimeToDate(this.hamsterDataArray[i].nowtime),
         y: this.hamsterDataArray[i].humidity,
       };
     }
@@ -199,11 +195,22 @@ export default class Home extends Vue {
     const wheelSpeed = [];
     for (let i = 0; i < this.hamsterDataArray.length; i += 1) {
       wheelSpeed[i] = {
-        x: this.hamsterDataArray[i].nowtime,
+        x: Home.nowtimeToDate(this.hamsterDataArray[i].nowtime),
         y: this.hamsterDataArray[i].wheelSpeed,
       };
     }
     this.wheelSpeed = wheelSpeed;
+  }
+
+  private static nowtimeToDate(nowtimeString: string): Date {
+    const year = Number(nowtimeString.substring(0, 4));
+    const month = Number(nowtimeString.substring(4, 6));
+    const day = Number(nowtimeString.substring(6, 8));
+    const hour = Number(nowtimeString.substring(8, 10));
+    const min = Number(nowtimeString.substring(10, 12));
+    const sec = Number(nowtimeString.substring(12, 14));
+
+    return new Date(year, month, day, hour, min, sec);
   }
 }
 </script>
