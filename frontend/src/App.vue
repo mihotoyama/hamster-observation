@@ -1,12 +1,24 @@
-<template>
-  <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view/>
-  </div>
+<template lang="pug">
+  #app
+    #nav
+      router-link(
+        :to="{ name: 'Home'}"
+      )
+        | Home
+      | |
+      router-link(
+        :to="{ name: 'Nanika'}"
+      )
+        | Nanika
+    router-view
 </template>
+
+<script lang="ts">
+import { Component, Vue } from 'vue-property-decorator';
+
+@Component({})
+export default class App extends Vue {}
+</script>
 
 <style>
 #app {
