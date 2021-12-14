@@ -36,6 +36,10 @@ export class HamsterService {
       order: { id: 'DESC' }
     })
 
+    if (!beforeData) {
+      return undefined;
+    }
+
     // rpmを算出
     return (currentData.wheelCount - beforeData.wheelCount) / (this.nowtimeToDate(currentData.nowtime).getTime() - this.nowtimeToDate(beforeData.nowtime).getTime()) * 60;
   }
