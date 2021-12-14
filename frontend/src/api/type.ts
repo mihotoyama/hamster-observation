@@ -9,4 +9,6 @@ export type HamsterResponse = {
   wheelSpeed: number;
 }
 
-export type HamsterResponseArray = HamsterResponse[];
+export type HamsterResponseArray = {
+  allData: HamsterResponse[],
+};
