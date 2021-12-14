@@ -16,10 +16,12 @@ export default class HamsterChartLine extends Mixins(Line, mixins.reactiveProp) 
 
   @Watch('chartData')
   onChartDataChanged() {
+    console.log('watch', this.chartData);
     this.load();
   }
 
   mounted() {
+    console.log('mounted in chart component', this.chartData);
     this.renderChart(this.chartData, this.chartOptions);
   }
 

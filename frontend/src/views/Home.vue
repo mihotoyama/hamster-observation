@@ -6,6 +6,7 @@
     | 餌場うろうろ {{ activeCount }} 分
     | 寝床の出入り {{ houseCount }} 回
     hamster-chart-line(
+      v-if="temperature.length !== 0"
       :chartData="chartDataTempHum"
       :chartOptions="chartOptionsTempHum"
       :chartStyles="chartStyles"
@@ -15,21 +16,23 @@
       :chartOptions="chartOptionsWheelSpeed"
       :chartStyles="chartStyles"
     )
-    hamster-chart-bar(
-      :chartData="chartDataWheelSpeed"
-      :chartOptions="chartOptionsWheelSpeed"
-      :chartStyles="chartStyles"
-    )
 
 </template>
 
 <script lang="ts">
 import { ChartOptions, ChartData } from 'chart.js';
-import { Component, Vue } from 'vue-property-decorator';
+import { Component, Vue, Watch } from 'vue-property-decorator';
 import HamsterChartLine from '../components/HamsterChartLine.vue';
 import HamsterChartBar from '../components/HamsterChartBar.vue';
 import getHamsterJson from '../api/api';
-import { HamsterResponseArray } from '../api/type';
+import { HamsterResponse, HamsterResponseArray } from '../api/type';
+
+interface DataForChart {
+  x: string,
+  y: number,
+}
+
+type HamsterDataArray = HamsterResponse[];
 
 @Component({
   components: {
@@ -38,7 +41,7 @@ import { HamsterResponseArray } from '../api/type';
   },
 })
 export default class Home extends Vue {
-  public hamsterJsonArray: HamsterResponseArray = [{
+  public hamsterDataArray: HamsterDataArray = [{
     nowtime: '',
     weight: 0,
     activeCount: 0,
@@ -49,52 +52,28 @@ export default class Home extends Vue {
     wheelSpeed: 0,
   }];
 
-  async mounted(): Promise<void> {
-    this.hamsterJsonArray = await getHamsterJson();
+  public activeCount = 0;
 
-    /* eslint-disable max-len */
-    const { activeCount, wheelCount, houseCount } = this.hamsterJsonArray[this.hamsterJsonArray.length - 1];
-    /* eslint-enable max-len */
+  public wheelCount = 0;
 
-    const temperature = [];
-    for (let i = 0; i < this.hamsterJsonArray.length; i += 1) {
-      temperature[i] = {
-        x: this.hamsterJsonArray[i].nowtime,
-        y: this.hamsterJsonArray[i].temperature,
-      };
-    }
+  public houseCount = 0;
 
-    const humidity = [];
-    for (let i = 0; i < this.hamsterJsonArray.length; i += 1) {
-      humidity[i] = {
-        x: this.hamsterJsonArray[i].nowtime,
-        y: this.hamsterJsonArray[i].humidity,
-      };
-    }
+  public temperature: DataForChart[] = [];
 
-    const wheelSpeed = [];
-    for (let i = 0; i < this.hamsterJsonArray.length; i += 1) {
-      wheelSpeed[i] = {
-        x: this.hamsterJsonArray[i].nowtime,
-        y: this.hamsterJsonArray[i].wheelSpeed,
-      };
-    }
-  }
+  public humidity: DataForChart[] = [];
+
+  public wheelSpeed: DataForChart[] = [];
 
   // チャートのオプション
-  chartOptionsTempHum: ChartOptions = {
+  public chartOptionsTempHum: ChartOptions = {
     responsive: true,
     scales: {
       xAxes: [
         {
           type: 'time',
-          time: {
-            unit: 'second',
+          ticks: {
             min: '20211210220000',
             max: '20211210223000',
-            displayFormats: {
-              hour: 'HH:mm:ss',
-            },
           },
         },
       ],
@@ -113,7 +92,7 @@ export default class Home extends Vue {
     },
   };
 
-  chartOptionsWheelSpeed: ChartOptions = {
+  public chartOptionsWheelSpeed: ChartOptions = {
     responsive: true,
     scales: {
       yAxes: [
@@ -127,13 +106,13 @@ export default class Home extends Vue {
   };
 
   // チャートのスタイル: <canvas>のstyle属性として設定
-  chartStyles = {
+  public chartStyles = {
     height: '100%',
     width: '100%',
   };
 
   // チャートのデータ
-  chartDataTempHum: ChartData = {
+  public chartDataTempHum: ChartData = {
     datasets: [{
       label: '温度',
       type: 'line',
@@ -141,7 +120,7 @@ export default class Home extends Vue {
       borderColor: 'rgb(255, 99, 132)',
       borderDash: [8, 4],
       fill: true,
-      data: [19.0, 19.1, 18.9, 19.1], // this.temperature,
+      data: this.temperature,
       yAxisID: 'temperature',
     }, {
       label: '湿度',
@@ -150,12 +129,12 @@ export default class Home extends Vue {
       borderColor: 'rgb(255, 99, 132)',
       borderDash: [8, 4],
       fill: true,
-      data: [39.0, 39.3, 38.9, 39.1], // this.humidity,
+      data: this.humidity,
       yAxisID: 'humidity',
     }],
   };
 
-  chartDataWheelSpeed: ChartData = {
+  public chartDataWheelSpeed: ChartData = {
     datasets: [{
       label: '回し車(rpm)',
       type: 'line',
@@ -163,9 +142,68 @@ export default class Home extends Vue {
       borderColor: 'rgb(255, 99, 132)',
       borderDash: [8, 4],
       fill: true,
-      data: [3000, 3010, 3008, 3015], // this.wheelSpeed,
+      data: this.wheelSpeed,
       yAxisID: 'wheel-speed',
     }],
   };
+
+  @Watch('temperature')
+  onTemperatureChanged() {
+    console.log('watch', this.temperature);
+    this.chartDataTempHum.datasets[0]!.data! = this.temperature;
+  }
+
+  @Watch('temperature')
+  onHumidityChanged() {
+    console.log('watch', this.humidity);
+    this.chartDataTempHum.datasets[1]!.data! = this.humidity;
+  }
+
+  @Watch('wheelSpeed')
+  onWheelSpeedChanged() {
+    console.log('watch', this.wheelSpeed);
+    this.chartDataWheelSpeed.datasets[0]!.data! = this.wheelSpeed;
+  }
+
+  async mounted(): Promise<void> {
+    this.hamsterDataArray = await (await getHamsterJson()).allData;
+
+    /* eslint-disable max-len */
+    const { activeCount, wheelCount, houseCount } = this.hamsterDataArray[this.hamsterDataArray.length - 1];
+    /* eslint-enable max-len */
+
+    this.activeCount = activeCount;
+    this.wheelCount = wheelCount;
+    this.houseCount = houseCount;
+
+    const temperature = [];
+    for (let i = 0; i < this.hamsterDataArray.length; i += 1) {
+      temperature[i] = {
+        x: this.hamsterDataArray[i].nowtime,
+        y: this.hamsterDataArray[i].temperature,
+      };
+    }
+    this.temperature = temperature;
+
+    console.log('mounted', this.temperature);
+
+    const humidity = [];
+    for (let i = 0; i < this.hamsterDataArray.length; i += 1) {
+      humidity[i] = {
+        x: this.hamsterDataArray[i].nowtime,
+        y: this.hamsterDataArray[i].humidity,
+      };
+    }
+    this.humidity = humidity;
+
+    const wheelSpeed = [];
+    for (let i = 0; i < this.hamsterDataArray.length; i += 1) {
+      wheelSpeed[i] = {
+        x: this.hamsterDataArray[i].nowtime,
+        y: this.hamsterDataArray[i].wheelSpeed,
+      };
+    }
+    this.wheelSpeed = wheelSpeed;
+  }
 }
 </script>
