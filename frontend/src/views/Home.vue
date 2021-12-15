@@ -78,11 +78,19 @@ export default class Home extends Vue {
           id: 'temperature',
           type: 'linear',
           position: 'left',
+          ticks: {
+            beginAtZero: true,
+            max: 35,
+          },
         },
         {
           id: 'humidity',
           type: 'linear',
           position: 'right',
+          ticks: {
+            beginAtZero: true,
+            max: 100,
+          },
         },
       ],
     },
@@ -104,7 +112,7 @@ export default class Home extends Vue {
   // チャートのスタイル: <canvas>のstyle属性として設定
   public chartStyles = {
     height: '100%',
-    width: '100%',
+    width: '80%',
   };
 
   // チャートのデータ
