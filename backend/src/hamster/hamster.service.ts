@@ -40,8 +40,10 @@ export class HamsterService {
       return undefined;
     }
 
+    // 何秒差か求める(Dete.getTime()でミリ秒単位の数字が得られるため1000をかける)
+    const diffSecond = (this.nowtimeToDate(currentData.nowtime).getTime() - this.nowtimeToDate(beforeData.nowtime).getTime()) / 1000;
     // rpmを算出
-    return (currentData.wheelCount - beforeData.wheelCount) / (this.nowtimeToDate(currentData.nowtime).getTime() - this.nowtimeToDate(beforeData.nowtime).getTime()) * 60;
+    return (currentData.wheelCount - beforeData.wheelCount) / diffSecond * 60;
   }
 
   private nowtimeToDate(nowtimeString: string): Date {
