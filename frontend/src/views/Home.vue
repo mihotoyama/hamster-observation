@@ -99,6 +99,11 @@ export default class Home extends Vue {
   public chartOptionsWheelSpeed: ChartOptions = {
     responsive: true,
     scales: {
+      xAxes: [
+        {
+          type: 'time',
+        },
+      ],
       yAxes: [
         {
           id: 'wheel-speed',
