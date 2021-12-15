@@ -153,19 +153,19 @@ export default class Home extends Vue {
   @Watch('temperature')
   onTemperatureChanged() {
     console.log('watch', this.temperature);
-    this.chartDataTempHum.datasets[0]!.data! = this.temperature;
+    this.chartDataTempHum.datasets![0].data! = this.temperature!;
   }
 
   @Watch('temperature')
   onHumidityChanged() {
     console.log('watch', this.humidity);
-    this.chartDataTempHum.datasets[1]!.data! = this.humidity;
+    this.chartDataTempHum.datasets![1].data! = this.humidity;
   }
 
   @Watch('wheelSpeed')
   onWheelSpeedChanged() {
     console.log('watch', this.wheelSpeed);
-    this.chartDataWheelSpeed.datasets[0]!.data! = this.wheelSpeed;
+    this.chartDataWheelSpeed.datasets![0].data! = this.wheelSpeed;
   }
 
   async mounted(): Promise<void> {
