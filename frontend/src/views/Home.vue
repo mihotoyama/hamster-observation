@@ -12,6 +12,7 @@
       :chartStyles="chartStyles"
     )
     hamster-chart-line(
+      v-if="wheelSpeed.length !== 0"
       :chartData="chartDataWheelSpeed"
       :chartOptions="chartOptionsWheelSpeed"
       :chartStyles="chartStyles"
@@ -166,6 +167,7 @@ export default class Home extends Vue {
   onWheelSpeedChanged() {
     console.log('watch', this.wheelSpeed);
     this.chartDataWheelSpeed.datasets![0].data! = this.wheelSpeed;
+    console.log('data wheelSpeed', this.chartDataWheelSpeed.datasets![0].data!);
   }
 
   async mounted(): Promise<void> {
@@ -207,6 +209,8 @@ export default class Home extends Vue {
       };
     }
     this.wheelSpeed = wheelSpeed;
+
+    console.log('mounted wheelSpeed', this.wheelSpeed);
   }
 
   private static nowtimeToDate(nowtimeString: string): Date {
